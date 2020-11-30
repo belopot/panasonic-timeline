@@ -20,3 +20,9 @@ canvas {
   right: 0;
   margin: 0em 2em 2em 0;
 }
+
+.renderer2D {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+}

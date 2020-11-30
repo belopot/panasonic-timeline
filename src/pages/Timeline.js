@@ -4,6 +4,7 @@ import * as POSTPROCESSING from "postprocessing";
 import { useEffect, useRef, useState } from "react";
 import { isMobile } from "mobile-device-detect";
 import DescriptionModal from "../components/DescriptionModal";
+import { CSS2DRenderer } from "../libs/CSS2DRenderer";
 
 THREE.Cache.enabled = true;
 
@@ -49,6 +50,7 @@ function Timeline({ data }) {
     /**
      * Renderer
      */
+    //3D renderer
     const renderer = new THREE.WebGLRenderer({
       powerPreference: "high-performance",
       antialias: false,
@@ -57,9 +59,15 @@ function Timeline({ data }) {
     });
     renderer.setClearColor("#ffffff");
     renderer.setSize(width, height);
-    renderer.setPixelRatio(isMobile ? 2 : 2);
+    renderer.setPixelRatio(2);
 
     canvasContainer.current.appendChild(renderer.domElement);
+
+    //2D renderer
+    const renderer2D = new CSS2DRenderer();
+    renderer2D.setSize(width, height);
+    renderer2D.domElement.className = "renderer2D";
+    canvasContainer.current.appendChild(renderer2D.domElement);
 
     //Mouse&Touch event
     function onMouseDown(event) {}
@@ -262,6 +270,7 @@ function Timeline({ data }) {
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
         composer.setSize(width, height);
+        renderer2D.setSize(width, height);
       }
     }
 
@@ -270,6 +279,7 @@ function Timeline({ data }) {
       renderRequested = false;
       resizeRendererToDisplaySize();
       composer.render();
+      renderer2D.render(scene, camera);
     }
 
     function requestRenderIfNotRequested() {
@@ -324,8 +334,20 @@ function Timeline({ data }) {
         modalData={modalData}
       />
       <div className="controls">
-        <button onClick={() => {console.log("Move to left")}}>left</button>
-        <button onClick={() => {console.log("Move to right")}}>right</button>
+        <button
+          onClick={() => {
+            console.log("Move to left");
+          }}
+        >
+          left
+        </button>
+        <button
+          onClick={() => {
+            console.log("Move to right");
+          }}
+        >
+          right
+        </button>
       </div>
       <div className="canvasContainer" ref={canvasContainer}></div>
     </>
