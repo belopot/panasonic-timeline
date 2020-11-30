@@ -1,0 +1,43 @@
+:root {
+  --border-size: 5px;
+}
+
+.loader2d {
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  border: var(--border-size) solid rgb(80, 80, 80);
+  border-radius: 50%;
+}
+
+.loader2d:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 5rem;
+  height: 5rem;
+  border: var(--border-size) solid rgb(253, 253, 253);
+  border-radius: 50%;
+  clip-path: polygon(40% 0, 100% 0, 100% 50%, 40% 50%);
+  z-index: 1;
+  animation: loader-spin forwards 1.5s infinite cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+@keyframes loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
