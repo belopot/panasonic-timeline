@@ -5,10 +5,11 @@ import { useEffect, useRef, useState } from "react";
 import { isMobile } from "mobile-device-detect";
 import DescriptionModal from "../components/DescriptionModal";
 import { CSS2DRenderer } from "../libs/CSS2DRenderer";
+import RMLine from "../libs/RMLine";
 
 THREE.Cache.enabled = true;
 
-function Timeline({ data }) {
+function Timeline({ dataset }) {
   const canvasContainer = useRef(null);
   const [isOpenDesModal, setIsOpenDesModal] = useState(false);
   const [modalData, setModalData] = useState({});
@@ -19,6 +20,7 @@ function Timeline({ data }) {
     const clock = new THREE.Clock();
     const rayCaster = new THREE.Raycaster();
     let intersects = [];
+    let rmLines = [];
     /**
      * Scene
      */
@@ -35,17 +37,16 @@ function Timeline({ data }) {
     /**
      * Helper
      */
-
     //Axis
-    const axisHelper = new THREE.AxesHelper(5);
+    const axisHelper = new THREE.AxesHelper(150);
     scene.add(axisHelper);
 
     //Cube
-    const geometry = new THREE.CircleGeometry(1, 64);
+    const geometry = new THREE.CircleGeometry(10, 64);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const baseObj = new THREE.Mesh(geometry, material);
     baseObj.position.set(0, 0, 0);
-    scene.add(baseObj);
+    // scene.add(baseObj);
 
     /**
      * Renderer
@@ -127,7 +128,8 @@ function Timeline({ data }) {
     /**
      * Camera
      */
-    let frustumSize = 20;
+    // frustumSize is the height of screen
+    let frustumSize = 160;
     let aspect = width / height;
     const camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
@@ -137,6 +139,7 @@ function Timeline({ data }) {
       -100,
       100
     );
+    camera.position.set(0, 0, 0);
 
     /**
      * Composer
@@ -278,6 +281,12 @@ function Timeline({ data }) {
     function render() {
       renderRequested = false;
       resizeRendererToDisplaySize();
+
+      //Update rmLine
+      for (let i in rmLines) {
+        rmLines[i].update(width, height);
+      }
+
       composer.render();
       renderer2D.render(scene, camera);
     }
@@ -293,6 +302,39 @@ function Timeline({ data }) {
     function startRender() {
       createComposer();
       requestRenderIfNotRequested();
+      generateRMLines();
+    }
+
+    const IntervalRMLine = 1.3;
+    function generateRMLines() {
+      //Generate line data from node data
+      const dataset_line = [];
+      for (let i in dataset) {
+        const k = i - 1;
+        if (k < 0) continue;
+        const data = {
+          start: {
+            title: dataset[k].title,
+            texture: dataset[k].texture,
+            position: dataset[k].position,
+            color: dataset[k].color,
+          },
+          end: {
+            title: dataset[i].title,
+            texture: dataset[i].texture,
+            position: dataset[i].position,
+            color: dataset[i].color,
+          },
+        };
+        dataset_line.push(data);
+      }
+
+      //Create rmlines
+      for (let i in dataset_line) {
+        dataset_line[i].delay = i * IntervalRMLine;
+        const rmLine = RMLine(scene, dataset_line[i]);
+        rmLines.push(rmLine);
+      }
     }
 
     /**
@@ -312,6 +354,12 @@ function Timeline({ data }) {
       smaaSearchImage = search;
       smaaAreaImage = area;
     });
+
+    //Load textures
+    const textureLoader = new THREE.TextureLoader(loadingManager);
+    for (let i in dataset) {
+      dataset[i].texture = textureLoader.load(dataset[i].texturePath);
+    }
 
     /**
      * RenderEvent & Dispose
