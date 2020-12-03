@@ -88,7 +88,7 @@ function Timeline({ dataset }) {
       let pickedObjs = rayCaster.intersectObjects(intersects);
       if (pickedObjs.length > 0) {
         //Show pop up
-        setModalData(pickedObjs[0].object.parent.popupData);
+        setModalData(pickedObjs[0].object.hotspot);
         setIsOpenDesModal(true);
       }
     }
@@ -118,7 +118,7 @@ function Timeline({ dataset }) {
       let pickedObjs = rayCaster.intersectObjects(intersects);
       if (pickedObjs.length > 0) {
         //Show pop up
-        setModalData(pickedObjs[0].object.parent.popupData);
+        setModalData(pickedObjs[0].object.hotspot);
         setIsOpenDesModal(true);
       }
     }
@@ -423,6 +423,7 @@ function Timeline({ dataset }) {
         dataset[i].delay = i * IntervalRMNode;
         const rmNode = RMNode(scene, dataset[i]);
         rmNodes.push(rmNode);
+        intersects.push(rmNode.intersect);
       }
     }
 

@@ -27,6 +27,7 @@ export default (scene, data) => {
   );
   photo.scale.set(0, 0, 0);
   pivot.add(photo);
+  photo.hotspot = data.hotspot;
 
   //Annotation
   function createAnnotation() {
@@ -81,5 +82,5 @@ export default (scene, data) => {
 
   startTrigger();
 
-  return {};
+  return { intersect: photo };
 };

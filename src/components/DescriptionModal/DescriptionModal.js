@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 import Modal from "react-modal";
 import styles from "./DescriptionModal.module.css";
-import Template2 from "../ModalContents/Template2";
-import Template3 from "../ModalContents/Template3";
+import Template1 from "../ModalContents/Template1";
 
 const DescriptionModal = ({
   modalIsOpen,
@@ -15,14 +14,9 @@ const DescriptionModal = ({
   let content = <></>;
   //Set Content
   switch (modalData.template) {
-    case "template2":
+    case "template1":
       content = (
-        <Template2 image={modalData.image} desc={modalData.desc}></Template2>
-      );
-      break;
-    case "template3":
-      content = (
-        <Template3 desc={modalData.desc} feature={modalData.feature}></Template3>
+        <Template1 image={modalData.image} title={modalData.title} desc={modalData.desc}></Template1>
       );
       break;
     default:
@@ -42,7 +36,6 @@ const DescriptionModal = ({
         aria-label="Close modal"
         className={styles.descriptionModalCloseBtn}
       ></button>
-      <div className={styles.descriptionModalTitle}>{modalData.title}</div>
       {content}
     </Modal>
   );
