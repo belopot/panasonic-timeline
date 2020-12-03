@@ -1,7 +1,9 @@
+import "animate.css";
 import "./Timeline.css";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import * as POSTPROCESSING from "postprocessing";
-import { useEffect, useRef, useState } from "react";
+import { gsap, Power1, Power2, Power3, Power4, Expo } from "gsap";
 import { isMobile } from "mobile-device-detect";
 import DescriptionModal from "../components/DescriptionModal";
 import { CSS2DRenderer } from "../libs/CSS2DRenderer";
@@ -14,10 +16,13 @@ function Timeline({ dataset }) {
   const canvasContainer = useRef(null);
   const [isOpenDesModal, setIsOpenDesModal] = useState(false);
   const [modalData, setModalData] = useState({});
+  const [isPortrait, setIsPortrait] = useState(false);
 
   useEffect(() => {
     let width = canvasContainer.current.offsetWidth;
     let height = canvasContainer.current.offsetHeight;
+    setIsPortrait(height > width);
+
     const clock = new THREE.Clock();
     const rayCaster = new THREE.Raycaster();
     let intersects = [];
@@ -141,7 +146,77 @@ function Timeline({ dataset }) {
       -100,
       100
     );
-    camera.position.set(0, 0, 0);
+
+    //cam positions for portrait
+    const VIEWPORT_LOCATIONS = [
+      new THREE.Vector3(-70, 0, 0),
+      new THREE.Vector3(-16.9, 0, 0),
+      new THREE.Vector3(16.9, 0, 0),
+      new THREE.Vector3(70, 0, 0),
+    ];
+    let curViewportIdx = 0;
+
+    function initCamPos() {
+      camera.position.set(0, 0, 0);
+      if (height > width) {
+        camera.position.set(
+          VIEWPORT_LOCATIONS[curViewportIdx].x,
+          VIEWPORT_LOCATIONS[curViewportIdx].y,
+          VIEWPORT_LOCATIONS[curViewportIdx].z
+        );
+      }
+    }
+    initCamPos();
+
+    function nextViewport() {
+      let idx = curViewportIdx;
+      idx++;
+      if (idx > VIEWPORT_LOCATIONS.length - 1) {
+        idx = VIEWPORT_LOCATIONS.length - 1;
+      }
+      if (idx === curViewportIdx) return;
+
+      curViewportIdx = idx;
+
+      gsap.killTweensOf(camera.position);
+      gsap.to(camera.position, {
+        x: VIEWPORT_LOCATIONS[curViewportIdx].x,
+        y: VIEWPORT_LOCATIONS[curViewportIdx].y,
+        z: VIEWPORT_LOCATIONS[curViewportIdx].z,
+        duration: 1,
+        delay: 0,
+        ease: Power2.easeOut,
+        onUpdate() {
+          requestRenderIfNotRequested();
+        },
+      });
+    }
+    window.nextViewport = nextViewport;
+
+    function prevViewport() {
+      let idx = curViewportIdx;
+      idx--;
+      if (idx < 0) {
+        idx = 0;
+      }
+      if (idx === curViewportIdx) return;
+
+      curViewportIdx = idx;
+
+      gsap.killTweensOf(camera.position);
+      gsap.to(camera.position, {
+        x: VIEWPORT_LOCATIONS[curViewportIdx].x,
+        y: VIEWPORT_LOCATIONS[curViewportIdx].y,
+        z: VIEWPORT_LOCATIONS[curViewportIdx].z,
+        duration: 1,
+        delay: 0,
+        ease: Power2.easeOut,
+        onUpdate() {
+          requestRenderIfNotRequested();
+        },
+      });
+    }
+    window.prevViewport = prevViewport;
 
     /**
      * Composer
@@ -276,6 +351,8 @@ function Timeline({ dataset }) {
         renderer.setSize(width, height);
         composer.setSize(width, height);
         renderer2D.setSize(width, height);
+        initCamPos();
+        setIsPortrait(height > width);
       }
     }
 
@@ -341,7 +418,7 @@ function Timeline({ dataset }) {
     }
 
     const IntervalRMNode = 1;
-    function generateRMNodes(){
+    function generateRMNodes() {
       for (let i in dataset) {
         dataset[i].delay = i * IntervalRMNode;
         const rmNode = RMNode(scene, dataset[i]);
@@ -393,22 +470,25 @@ function Timeline({ dataset }) {
         appRootId="#root"
         modalData={modalData}
       />
-      <div className="controls">
-        <button
-          onClick={() => {
-            console.log("Move to left");
-          }}
-        >
-          left
-        </button>
-        <button
-          onClick={() => {
-            console.log("Move to right");
-          }}
-        >
-          right
-        </button>
-      </div>
+      {isPortrait ? (
+        <>
+          <span
+            className="btnArrow btnNext"
+            onClick={() => {
+              window.nextViewport();
+            }}
+          ></span>
+          <span
+            className="btnArrow btnPrev"
+            onClick={() => {
+              window.prevViewport();
+            }}
+          ></span>
+        </>
+      ) : (
+        <></>
+      )}
+
       <div className="canvasContainer" ref={canvasContainer}></div>
     </>
   );

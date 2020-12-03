@@ -1,12 +1,12 @@
 import * as THREE from "three";
 import { gsap, Power1, Power2, Power3, Power4, Expo } from "gsap";
+import { CSS2DObject } from "../libs/CSS2DRenderer";
 
-const NODE_RADIUS = 10;
-const PHOTO_RADIUS = 8;
+const NODE_RADIUS = 12.5;
+const PHOTO_RADIUS = 10;
+const ANNO_DELTA_DIS = NODE_RADIUS * 1.5;
 
 export default (scene, data) => {
-  console.log(data);
-
   //Pivot
   const pivot = new THREE.Object3D();
   pivot.position.set(data.position.x, data.position.y, 0);
@@ -28,6 +28,25 @@ export default (scene, data) => {
   photo.scale.set(0, 0, 0);
   pivot.add(photo);
 
+  //Annotation
+  function createAnnotation() {
+    const div = document.createElement("div");
+    div.classList.add("rmNodeAnno");
+
+    const span = document.createElement("span");
+    span.innerHTML = data.title;
+    span.classList.add("animate__animated", "animate__fadeInUp");
+    div.append(span);
+
+    const annotation = new CSS2DObject(div);
+    annotation.position.set(
+      data.annoDir.x * ANNO_DELTA_DIS,
+      data.annoDir.y * ANNO_DELTA_DIS,
+      0
+    );
+    pivot.add(annotation);
+  }
+
   //Start animation
   function startTrigger() {
     //bg
@@ -45,16 +64,19 @@ export default (scene, data) => {
 
     //photo
     gsap.to(photo.scale, {
-        x: 1,
-        y: 1,
-        z: 1,
-        duration: 1,
-        delay: data.delay - 0.3 + 0.5,
-        ease: Power3.easeOut,
-        onUpdate() {
-          window.requestRenderIfNotRequested();
-        },
-      });
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 1,
+      delay: data.delay - 0.3 + 0.5,
+      ease: Power3.easeOut,
+      onStart() {
+        createAnnotation();
+      },
+      onUpdate() {
+        window.requestRenderIfNotRequested();
+      },
+    });
   }
 
   startTrigger();

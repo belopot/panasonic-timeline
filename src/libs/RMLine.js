@@ -6,6 +6,33 @@ import { gsap, Power1 } from "gsap";
 
 const LINE_WIDTH = 60; //in pixels
 
+function GetLineWidth(screenHeight) {
+  var width = LINE_WIDTH;
+  
+  if (screenHeight > 0 && screenHeight <= 320) {
+    width = 22;
+  } else if (screenHeight > 320 && screenHeight <= 420) {
+    width = 27;
+  } else if (screenHeight > 420 && screenHeight <= 520) {
+    width = 33;
+  } else if (screenHeight > 520 && screenHeight <= 620) {
+    width = 38;
+  } else if (screenHeight > 620 && screenHeight <= 720) {
+    width = 43;
+  } else if (screenHeight > 720 && screenHeight <= 820) {
+    width = 48;
+  } else if (screenHeight > 820 && screenHeight <= 920) {
+    width = 53;
+  } else if (screenHeight > 920 && screenHeight <= 1020) {
+    width = 58;
+  } else if (screenHeight > 1020 && screenHeight <= 1120) {
+    width = 60;
+  } else {
+    width = 60;
+  }
+  return width;
+}
+
 export default (scene, data) => {
   const startPoint = new THREE.Vector3(
     data.start.position.x,
@@ -69,6 +96,7 @@ export default (scene, data) => {
   startTrigger();
 
   function update(screenWidth, screenHeight) {
+    material.linewidth = GetLineWidth(screenHeight);
     material.resolution.set(screenWidth, screenHeight);
   }
 
