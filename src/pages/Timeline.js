@@ -6,6 +6,7 @@ import { isMobile } from "mobile-device-detect";
 import DescriptionModal from "../components/DescriptionModal";
 import { CSS2DRenderer } from "../libs/CSS2DRenderer";
 import RMLine from "../libs/RMLine";
+import RMNode from "../libs/RMNode";
 
 THREE.Cache.enabled = true;
 
@@ -21,6 +22,7 @@ function Timeline({ dataset }) {
     const rayCaster = new THREE.Raycaster();
     let intersects = [];
     let rmLines = [];
+    let rmNodes = [];
     /**
      * Scene
      */
@@ -39,7 +41,7 @@ function Timeline({ dataset }) {
      */
     //Axis
     const axisHelper = new THREE.AxesHelper(150);
-    scene.add(axisHelper);
+    // scene.add(axisHelper);
 
     //Cube
     const geometry = new THREE.CircleGeometry(10, 64);
@@ -303,9 +305,10 @@ function Timeline({ dataset }) {
       createComposer();
       requestRenderIfNotRequested();
       generateRMLines();
+      generateRMNodes();
     }
 
-    const IntervalRMLine = 1.3;
+    const IntervalRMLine = 1;
     function generateRMLines() {
       //Generate line data from node data
       const dataset_line = [];
@@ -334,6 +337,15 @@ function Timeline({ dataset }) {
         dataset_line[i].delay = i * IntervalRMLine;
         const rmLine = RMLine(scene, dataset_line[i]);
         rmLines.push(rmLine);
+      }
+    }
+
+    const IntervalRMNode = 1;
+    function generateRMNodes(){
+      for (let i in dataset) {
+        dataset[i].delay = i * IntervalRMNode;
+        const rmNode = RMNode(scene, dataset[i]);
+        rmNodes.push(rmNode);
       }
     }
 

@@ -47,12 +47,13 @@ export default (scene, data) => {
   line.computeLineDistances();
   scene.add(line);
 
+  // Start animation
   function startTrigger() {
     gsap.to(drawPoint, {
       x: endPoint.x,
       y: endPoint.y,
       z: endPoint.z,
-      duration: 1,
+      duration: 0.8,
       delay: data.delay,
       ease: "none",
       onUpdate() {
