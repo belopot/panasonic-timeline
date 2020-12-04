@@ -39,7 +39,7 @@ function Timeline({ dataset }) {
      * Lighter
      */
     let hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
-    scene.add(hemiLight);
+    // scene.add(hemiLight);
 
     /**
      * Helper
