@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { gsap, Power1, Power2, Power3, Power4, Expo } from "gsap";
 import { CSS2DObject } from "../libs/CSS2DRenderer";
+import { isMobile } from "mobile-device-detect";
 
 const NODE_RADIUS = 12.5;
 const PHOTO_RADIUS = 10;
-const ANNO_DELTA_DIS = NODE_RADIUS * 1.5;
+const ANNO_DELTA_DIS = isMobile ? NODE_RADIUS * 1.6 : NODE_RADIUS * 1.5;
 
 export default (scene, data) => {
   //Pivot

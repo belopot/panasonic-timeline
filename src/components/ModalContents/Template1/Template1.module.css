@@ -54,3 +54,17 @@
         font-size: 0.8em;
     }
 }
+
+@media(max-height: 541px){
+    .content {
+        flex-direction: row;
+    }
+    .image {
+        width: 200px;
+    }
+    .detail{
+        margin: 0 0 0 3em;
+        font-size: 0.9em;
+        width: 50%;
+    }
+}
