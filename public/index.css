@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'DINOT';
-    src: url('/fonts/webfonts/35A96E_0_0.woff2') format('woff2'), url('/fonts/webfonts/35A96E_0_0.woff') format('woff');
+    src: url('/assets/fonts/webfonts/35A96E_0_0.woff2') format('woff2'), url('/assets/fonts/webfonts/35A96E_0_0.woff') format('woff');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
     font-family: 'DINOT';
-    src: url('/fonts/webfonts/35A96E_1_0.woff2') format('woff2'), url('/fonts/webfonts/35A96E_1_0.woff') format('woff');
+    src: url('/assets/fonts/webfonts/35A96E_1_0.woff2') format('woff2'), url('/assets/fonts/webfonts/35A96E_1_0.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
     font-family: 'DINOT';
-    src: url('/fonts/webfonts/35A96E_2_0.woff2') format('woff2'), url('/fonts/webfonts/35A96E_2_0.woff') format('woff');
+    src: url('/assets/fonts/webfonts/35A96E_2_0.woff2') format('woff2'), url('/assets/fonts/webfonts/35A96E_2_0.woff') format('woff');
     font-weight: 500;
     font-style: normal;
     font-display: swap;
@@ -24,7 +24,7 @@
 
 @font-face {
     font-family: 'DINOT';
-    src: url('/fonts/webfonts/35A96E_3_0.woff2') format('woff2'), url('/fonts/webfonts/35A96E_3_0.woff') format('woff');
+    src: url('/assets/fonts/webfonts/35A96E_3_0.woff2') format('woff2'), url('/assets/fonts/webfonts/35A96E_3_0.woff') format('woff');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
