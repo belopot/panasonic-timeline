@@ -26,8 +26,8 @@
 
 .descriptionModalCloseBtn {
   position: absolute;
-  top: 25px;
-  right: 25px;
+  top: 5.5em;
+  right: 2em;
   width: 30px;
   height: 30px;
   outline: none;
