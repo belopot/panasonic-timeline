@@ -10,7 +10,7 @@ const ANNO_DELTA_DIS = isMobile ? NODE_RADIUS * 1.6 : NODE_RADIUS * 1.5;
 export default (scene, data) => {
   //Pivot
   const pivot = new THREE.Object3D();
-  pivot.position.set(data.position.x, data.position.y, 0);
+  pivot.position.set(data.position.x, data.position.y, -10);
   scene.add(pivot);
 
   //Background circle shape
@@ -27,6 +27,7 @@ export default (scene, data) => {
     new THREE.MeshBasicMaterial({ map: data.texture })
   );
   photo.scale.set(0, 0, 0);
+  photo.position.z = 1;
   pivot.add(photo);
   photo.hotspot = data.hotspot;
 

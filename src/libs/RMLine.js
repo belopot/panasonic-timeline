@@ -72,6 +72,7 @@ export default (scene, data) => {
 
   const line = new Line2(geometry, material);
   line.computeLineDistances();
+  line.position.z = -30;
   scene.add(line);
 
   // Start animation
