@@ -9,7 +9,7 @@
   margin: unset;
 }
 
-canvas {
+.canvasContainer canvas {
   width: 100% !important;
   height: 100% !important;
 }
@@ -58,60 +58,4 @@ canvas {
   border-top: 0.15em solid rgb(216, 216, 216);
   border-right: 0.15em solid rgb(216, 216, 216);
   transform: rotate(-135deg);
-}
-
-.renderer2D {
-  position: absolute;
-  top: 0;
-  pointer-events: none;
-  width: inherit !important;
-  height: inherit !important;
-}
-
-.rmNodeAnno {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.rmNodeAnno span {
-  position: absolute;
-  color: aliceblue;
-  font-size: 1.2em;
-  width: max-content;
-}
-
-.animate__animated.animate__fadeInUp {
-  --animate-duration: 0.8s;
-}
-
-@media(max-height: 1024px) {
-  .rmNodeAnno span {
-    font-size: 1.2em;
-  }
-}
-
-@media(max-height: 824px) {
-  .rmNodeAnno span {
-    font-size: 1.1em;
-  }
-}
-
-@media(max-height: 624px) {
-  .rmNodeAnno span {
-    font-size: 1em;
-  }
-}
-
-@media(max-height: 424px) {
-  .rmNodeAnno span {
-    font-size: 0.9em;
-  }
-}
-
-@media(max-height: 324px) {
-  .rmNodeAnno span {
-    font-size: 0.8em;
-  }
 }

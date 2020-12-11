@@ -6,10 +6,9 @@ import Template1 from "../ModalContents/Template1";
 const DescriptionModal = ({
   modalIsOpen,
   onRequestClose,
-  appRootId,
   modalData,
 }) => {
-  Modal.setAppElement(appRootId);
+  Modal.setAppElement("#root");
 
   let content = <></>;
   //Set Content
@@ -44,7 +43,6 @@ const DescriptionModal = ({
 DescriptionModal.propTypes = {
   modalIsOpen: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
-  appRootId: PropTypes.string.isRequired,
   modalData: PropTypes.any.isRequired,
 };
 

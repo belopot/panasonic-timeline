@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { gsap, Power1, Power2, Power3, Power4, Expo } from "gsap";
-import { CSS2DObject } from "../libs/CSS2DRenderer";
-import { isMobile } from "mobile-device-detect";
+import { CSS2DObject } from "./CSS2DRenderer";
+import { isMobile } from "react-device-detect";
 
 const NODE_RADIUS = 12.5;
 const PHOTO_RADIUS = 10;
