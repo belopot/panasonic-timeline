@@ -366,7 +366,8 @@ function ProductRoadmap({ dataset }) {
         rmLines[i].update(width, height);
       }
 
-      composer.render();
+      if(composer)
+        composer.render();
       renderer2D.render(scene, camera);
     }
 
@@ -457,7 +458,8 @@ function ProductRoadmap({ dataset }) {
     window.addEventListener("resize", requestRenderIfNotRequested);
     return () => {
       window.removeEventListener("resize", requestRenderIfNotRequested);
-      canvasContainer.current.innerHTML = "";
+      if(canvasContainer.current)
+        canvasContainer.current.innerHTML = "";
     };
   }, []);
 
