@@ -1,58 +1,59 @@
-import { useEffect, useRef, useState } from "react";
-import classnames from 'classnames';
-import * as THREE from "three";
-import * as POSTPROCESSING from "postprocessing";
-import { gsap, Power1, Power2, Power3, Power4, Expo } from "gsap";
-import { CSS2DRenderer } from "../libs/CSS2DRenderer";
-import RMLine from "../libs/RMLine";
-import RMNode from "../libs/RMNode";
-import DescriptionModal from "../DescriptionModal";
-import "animate.css";
-import styles from "./ProductRoadmap.module.css";
+import { useEffect, useRef, useState } from "react"
+import classnames from "classnames"
+import * as THREE from "three"
+import * as POSTPROCESSING from "postprocessing"
+import { gsap, Power2 } from "gsap"
+import { CSS2DRenderer } from "../libs/CSS2DRenderer"
+import RMLine from "../libs/RMLine"
+import RMNode from "../libs/RMNode"
+import DescriptionModal from "../DescriptionModal"
+import "animate.css"
+import styles from "./ProductRoadmap.module.css"
 
-THREE.Cache.enabled = true;
+THREE.Cache.enabled = true
 
 function ProductRoadmap({ dataset }) {
-  const canvasContainer = useRef(null);
-  const [isOpenDesModal, setIsOpenDesModal] = useState(false);
-  const [modalData, setModalData] = useState({});
-  const [isPortrait, setIsPortrait] = useState(false);
+  const canvasContainer = useRef(null)
+  const [isOpenDesModal, setIsOpenDesModal] = useState(false)
+  const [modalData, setModalData] = useState({})
+  const [isPortrait, setIsPortrait] = useState(false)
 
   useEffect(() => {
-    let width = canvasContainer.current.offsetWidth;
-    let height = canvasContainer.current.offsetHeight;
-    setIsPortrait(height > width);
+    let width = canvasContainer.current.offsetWidth
+    let height = canvasContainer.current.offsetHeight
+    setIsPortrait(height > width)
 
-    const clock = new THREE.Clock();
-    const rayCaster = new THREE.Raycaster();
-    let intersects = [];
-    let rmLines = [];
-    let rmNodes = [];
+    // eslint-disable-next-line
+    const clock = new THREE.Clock()
+    const rayCaster = new THREE.Raycaster()
+    let intersects = []
+    let rmLines = []
+    let rmNodes = []
     /**
      * Scene
      */
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0x000000)
     // scene.fog = new THREE.Fog(0xa0a0a0, 30, 64);
 
     /**
      * Lighter
      */
-    let hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
+    // let hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.2);
     // scene.add(hemiLight);
 
     /**
      * Helper
      */
     //Axis
-    const axisHelper = new THREE.AxesHelper(150);
+    // const axisHelper = new THREE.AxesHelper(150);
     // scene.add(axisHelper);
 
     //Cube
-    const geometry = new THREE.CircleGeometry(10, 64);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const baseObj = new THREE.Mesh(geometry, material);
-    baseObj.position.set(0, 0, 0);
+    const geometry = new THREE.CircleGeometry(10, 64)
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    const baseObj = new THREE.Mesh(geometry, material)
+    baseObj.position.set(0, 0, 0)
     // scene.add(baseObj);
 
     /**
@@ -63,19 +64,19 @@ function ProductRoadmap({ dataset }) {
       powerPreference: "high-performance",
       antialias: false,
       stencil: false,
-      depth: false,
-    });
-    renderer.setClearColor("#ffffff");
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(2);
+      depth: false
+    })
+    renderer.setClearColor("#ffffff")
+    renderer.setSize(width, height)
+    renderer.setPixelRatio(2)
 
-    canvasContainer.current.appendChild(renderer.domElement);
+    canvasContainer.current.appendChild(renderer.domElement)
 
     //2D renderer
-    const renderer2D = new CSS2DRenderer();
-    renderer2D.setSize(width, height);
-    renderer2D.domElement.className = "renderer2D";
-    canvasContainer.current.appendChild(renderer2D.domElement);
+    const renderer2D = new CSS2DRenderer()
+    renderer2D.setSize(width, height)
+    renderer2D.domElement.className = "renderer2D"
+    canvasContainer.current.appendChild(renderer2D.domElement)
 
     //Mouse&Touch event
     function onMouseDown(event) {}
@@ -83,28 +84,28 @@ function ProductRoadmap({ dataset }) {
       const pickedPoint = new THREE.Vector2(
         (event.offsetX / width) * 2 - 1,
         -(event.offsetY / height) * 2 + 1
-      );
-      rayCaster.setFromCamera(pickedPoint, camera);
-      let pickedObjs = rayCaster.intersectObjects(intersects);
+      )
+      rayCaster.setFromCamera(pickedPoint, camera)
+      let pickedObjs = rayCaster.intersectObjects(intersects)
       if (pickedObjs.length > 0) {
         //Show pop up
-        setModalData(pickedObjs[0].object.hotspot);
-        setIsOpenDesModal(true);
+        setModalData(pickedObjs[0].object.hotspot)
+        setIsOpenDesModal(true)
       }
     }
     function onMouseMove(event) {
       const pickedPoint = new THREE.Vector2(
         (event.offsetX / width) * 2 - 1,
         -(event.offsetY / height) * 2 + 1
-      );
+      )
 
-      rayCaster.setFromCamera(pickedPoint, camera);
+      rayCaster.setFromCamera(pickedPoint, camera)
 
-      let pickedObjs = rayCaster.intersectObjects(intersects);
+      let pickedObjs = rayCaster.intersectObjects(intersects)
       if (pickedObjs.length > 0) {
-        document.body.style.cursor = "pointer";
+        document.body.style.cursor = "pointer"
       } else {
-        document.body.style.cursor = "default";
+        document.body.style.cursor = "default"
       }
     }
 
@@ -113,31 +114,31 @@ function ProductRoadmap({ dataset }) {
       const pickedPoint = new THREE.Vector2(
         (event.changedTouches[0].pageX / width) * 2 - 1,
         -(event.changedTouches[0].pageY / height) * 2 + 1
-      );
-      rayCaster.setFromCamera(pickedPoint, camera);
-      let pickedObjs = rayCaster.intersectObjects(intersects);
+      )
+      rayCaster.setFromCamera(pickedPoint, camera)
+      let pickedObjs = rayCaster.intersectObjects(intersects)
       if (pickedObjs.length > 0) {
         //Show pop up
-        setModalData(pickedObjs[0].object.hotspot);
-        setIsOpenDesModal(true);
+        setModalData(pickedObjs[0].object.hotspot)
+        setIsOpenDesModal(true)
       }
     }
     function onTouchMove() {}
 
-    renderer.domElement.addEventListener("mousedown", onMouseDown);
-    renderer.domElement.addEventListener("mouseup", onMouseUp);
-    renderer.domElement.addEventListener("mousemove", onMouseMove);
+    renderer.domElement.addEventListener("mousedown", onMouseDown)
+    renderer.domElement.addEventListener("mouseup", onMouseUp)
+    renderer.domElement.addEventListener("mousemove", onMouseMove)
 
-    renderer.domElement.addEventListener("touchstart", onTouchStart);
-    renderer.domElement.addEventListener("touchend", onTouchEnd);
-    renderer.domElement.addEventListener("touchmove", onTouchMove);
+    renderer.domElement.addEventListener("touchstart", onTouchStart)
+    renderer.domElement.addEventListener("touchend", onTouchEnd)
+    renderer.domElement.addEventListener("touchmove", onTouchMove)
 
     /**
      * Camera
      */
     // frustumSize is the height of screen
-    let frustumSize = 160;
-    let aspect = width / height;
+    let frustumSize = 160
+    let aspect = width / height
     const camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
@@ -145,40 +146,40 @@ function ProductRoadmap({ dataset }) {
       frustumSize / -2,
       -100,
       100
-    );
+    )
 
     //cam positions for portrait
     const VIEWPORT_LOCATIONS = [
       new THREE.Vector3(-70, 0, 0),
       new THREE.Vector3(-16.9, 0, 0),
       new THREE.Vector3(16.9, 0, 0),
-      new THREE.Vector3(70, 0, 0),
-    ];
-    let curViewportIdx = 0;
+      new THREE.Vector3(70, 0, 0)
+    ]
+    let curViewportIdx = 0
 
     function initCamPos() {
-      camera.position.set(0, 0, 0);
+      camera.position.set(0, 0, 0)
       if (height > width) {
         camera.position.set(
           VIEWPORT_LOCATIONS[curViewportIdx].x,
           VIEWPORT_LOCATIONS[curViewportIdx].y,
           VIEWPORT_LOCATIONS[curViewportIdx].z
-        );
+        )
       }
     }
-    initCamPos();
+    initCamPos()
 
     function nextViewport() {
-      let idx = curViewportIdx;
-      idx++;
+      let idx = curViewportIdx
+      idx++
       if (idx > VIEWPORT_LOCATIONS.length - 1) {
-        idx = VIEWPORT_LOCATIONS.length - 1;
+        idx = VIEWPORT_LOCATIONS.length - 1
       }
-      if (idx === curViewportIdx) return;
+      if (idx === curViewportIdx) return
 
-      curViewportIdx = idx;
+      curViewportIdx = idx
 
-      gsap.killTweensOf(camera.position);
+      gsap.killTweensOf(camera.position)
       gsap.to(camera.position, {
         x: VIEWPORT_LOCATIONS[curViewportIdx].x,
         y: VIEWPORT_LOCATIONS[curViewportIdx].y,
@@ -187,23 +188,23 @@ function ProductRoadmap({ dataset }) {
         delay: 0,
         ease: Power2.easeOut,
         onUpdate() {
-          requestRenderIfNotRequested();
-        },
-      });
+          requestRenderIfNotRequested()
+        }
+      })
     }
-    window.nextViewport = nextViewport;
+    window.nextViewport = nextViewport
 
     function prevViewport() {
-      let idx = curViewportIdx;
-      idx--;
+      let idx = curViewportIdx
+      idx--
       if (idx < 0) {
-        idx = 0;
+        idx = 0
       }
-      if (idx === curViewportIdx) return;
+      if (idx === curViewportIdx) return
 
-      curViewportIdx = idx;
+      curViewportIdx = idx
 
-      gsap.killTweensOf(camera.position);
+      gsap.killTweensOf(camera.position)
       gsap.to(camera.position, {
         x: VIEWPORT_LOCATIONS[curViewportIdx].x,
         y: VIEWPORT_LOCATIONS[curViewportIdx].y,
@@ -212,43 +213,41 @@ function ProductRoadmap({ dataset }) {
         delay: 0,
         ease: Power2.easeOut,
         onUpdate() {
-          requestRenderIfNotRequested();
-        },
-      });
+          requestRenderIfNotRequested()
+        }
+      })
     }
-    window.prevViewport = prevViewport;
+    window.prevViewport = prevViewport
 
     /**
      * Composer
      */
-    let composer;
+    let composer
     function createComposer() {
       //Composer
-      composer = new POSTPROCESSING.EffectComposer(renderer);
-      const renderPass = new POSTPROCESSING.RenderPass(scene, camera);
-      composer.addPass(renderPass);
+      composer = new POSTPROCESSING.EffectComposer(renderer)
+      const renderPass = new POSTPROCESSING.RenderPass(scene, camera)
+      composer.addPass(renderPass)
       const vignetteEffect = new POSTPROCESSING.VignetteEffect({
         eskil: false,
         offset: 0.1,
-        darkness: 0.7,
-      });
-      const brightnessContrastEffect = new POSTPROCESSING.BrightnessContrastEffect(
-        {
-          contrast: 0.05,
-          brightness: 0.0,
-        }
-      );
+        darkness: 0.7
+      })
+      const brightnessContrastEffect = new POSTPROCESSING.BrightnessContrastEffect({
+        contrast: 0.05,
+        brightness: 0.0
+      })
       const gammaCorrectionEffect = new POSTPROCESSING.GammaCorrectionEffect({
-        gamma: 1.5,
-      });
+        gamma: 1.5
+      })
 
       const smaaEffect = new POSTPROCESSING.SMAAEffect(
         smaaSearchImage,
         smaaAreaImage,
         POSTPROCESSING.SMAAPreset.HIGH,
         POSTPROCESSING.EdgeDetectionMode.DEPTH
-      );
-      smaaEffect.setEdgeDetectionThreshold(0.02);
+      )
+      smaaEffect.setEdgeDetectionThreshold(0.02)
 
       const bloomEffect = new POSTPROCESSING.BloomEffect({
         blendFunction: POSTPROCESSING.BlendFunction.SCREEN,
@@ -257,54 +256,50 @@ function ProductRoadmap({ dataset }) {
         luminanceSmoothing: 0.83,
         height: 1024,
         intensity: 1.5,
-        resolutionScale: 0.5,
-      });
+        resolutionScale: 0.5
+      })
 
       const hueSaturationEffect = new POSTPROCESSING.HueSaturationEffect({
         hue: 0.0,
-        saturation: 0.191,
-      });
+        saturation: 0.191
+      })
 
-      const normalPass = new POSTPROCESSING.NormalPass(scene, camera);
+      const normalPass = new POSTPROCESSING.NormalPass(scene, camera)
       const depthDownsamplingPass = new POSTPROCESSING.DepthDownsamplingPass({
         normalBuffer: normalPass.texture,
-        resolutionScale: 0.5,
-      });
+        resolutionScale: 0.5
+      })
       const normalDepthBuffer = renderer.capabilities.isWebGL2
         ? depthDownsamplingPass.texture
-        : null;
+        : null
 
       // Note: Thresholds and falloff correspond to camera near/far.
       // Example: worldDistance = distanceThreshold * (camera.far - camera.near)
-      const ssaoEffect = new POSTPROCESSING.SSAOEffect(
-        camera,
-        normalPass.texture,
-        {
-          blendFunction: POSTPROCESSING.BlendFunction.MULTIPLY,
-          distanceScaling: true,
-          depthAwareUpsampling: true,
-          normalDepthBuffer,
-          samples: 9,
-          rings: 7,
-          distanceThreshold: 0.02, // Render up to a distance of ~20 world units
-          distanceFalloff: 0.0025, // with an additional ~2.5 units of falloff.
-          rangeThreshold: 0.0003, // Occlusion proximity of ~0.3 world units
-          rangeFalloff: 0.0001, // with ~0.1 units of falloff.
-          luminanceInfluence: 0.7,
-          minRadiusScale: 0.33,
-          radius: 0.1,
-          intensity: 1.33,
-          bias: 0.025,
-          fade: 0.01,
-          color: null,
-          resolutionScale: 0.5,
-        }
-      );
+      const ssaoEffect = new POSTPROCESSING.SSAOEffect(camera, normalPass.texture, {
+        blendFunction: POSTPROCESSING.BlendFunction.MULTIPLY,
+        distanceScaling: true,
+        depthAwareUpsampling: true,
+        normalDepthBuffer,
+        samples: 9,
+        rings: 7,
+        distanceThreshold: 0.02, // Render up to a distance of ~20 world units
+        distanceFalloff: 0.0025, // with an additional ~2.5 units of falloff.
+        rangeThreshold: 0.0003, // Occlusion proximity of ~0.3 world units
+        rangeFalloff: 0.0001, // with ~0.1 units of falloff.
+        luminanceInfluence: 0.7,
+        minRadiusScale: 0.33,
+        radius: 0.1,
+        intensity: 1.33,
+        bias: 0.025,
+        fade: 0.01,
+        color: null,
+        resolutionScale: 0.5
+      })
 
       const textureEffect = new POSTPROCESSING.TextureEffect({
         blendFunction: POSTPROCESSING.BlendFunction.SKIP,
-        texture: depthDownsamplingPass.texture,
-      });
+        texture: depthDownsamplingPass.texture
+      })
 
       const effectPass = new POSTPROCESSING.EffectPass(
         camera,
@@ -316,159 +311,155 @@ function ProductRoadmap({ dataset }) {
         brightnessContrastEffect,
         gammaCorrectionEffect,
         hueSaturationEffect
-      );
+      )
 
-      composer.addPass(normalPass);
+      composer.addPass(normalPass)
       if (renderer.capabilities.isWebGL2) {
-        composer.addPass(depthDownsamplingPass);
+        composer.addPass(depthDownsamplingPass)
       } else {
-        console.log(
-          "WebGL 2 not supported, falling back to naive depth downsampling"
-        );
+        console.log("WebGL 2 not supported, falling back to naive depth downsampling")
       }
 
-      composer.addPass(effectPass);
-      composer.setSize(width, height);
+      composer.addPass(effectPass)
+      composer.setSize(width, height)
     }
 
     /**
      * Resize & Render
      */
     function resizeRendererToDisplaySize() {
-      const canvasWidth = renderer.domElement.offsetWidth;
-      const canvasHeight = renderer.domElement.offsetHeight;
+      const canvasWidth = renderer.domElement.offsetWidth
+      const canvasHeight = renderer.domElement.offsetHeight
 
-      const needResize = canvasWidth !== width || canvasHeight !== height;
+      const needResize = canvasWidth !== width || canvasHeight !== height
       if (needResize) {
-        width = canvasWidth;
-        height = canvasHeight;
-        aspect = width / height;
-        camera.left = (-frustumSize * aspect) / 2;
-        camera.right = (frustumSize * aspect) / 2;
-        camera.top = frustumSize / 2;
-        camera.bottom = -frustumSize / 2;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-        composer.setSize(width, height);
-        renderer2D.setSize(width, height);
-        initCamPos();
-        setIsPortrait(height > width);
+        width = canvasWidth
+        height = canvasHeight
+        aspect = width / height
+        camera.left = (-frustumSize * aspect) / 2
+        camera.right = (frustumSize * aspect) / 2
+        camera.top = frustumSize / 2
+        camera.bottom = -frustumSize / 2
+        camera.updateProjectionMatrix()
+        renderer.setSize(width, height)
+        composer.setSize(width, height)
+        renderer2D.setSize(width, height)
+        initCamPos()
+        setIsPortrait(height > width)
       }
     }
 
-    let renderRequested = false;
+    let renderRequested = false
     function render() {
-      renderRequested = false;
-      resizeRendererToDisplaySize();
+      renderRequested = false
+      resizeRendererToDisplaySize()
 
       //Update rmLine
       for (let i in rmLines) {
-        rmLines[i].update(width, height);
+        rmLines[i].update(width, height)
       }
 
-      if(composer)
-        composer.render();
-      renderer2D.render(scene, camera);
+      if (composer) composer.render()
+      renderer2D.render(scene, camera)
     }
 
     function requestRenderIfNotRequested() {
       if (!renderRequested) {
-        renderRequested = true;
-        requestAnimationFrame(render);
+        renderRequested = true
+        requestAnimationFrame(render)
       }
     }
-    window.requestRenderIfNotRequested = requestRenderIfNotRequested;
+    window.requestRenderIfNotRequested = requestRenderIfNotRequested
 
     function startRender() {
-      createComposer();
-      requestRenderIfNotRequested();
-      generateRMLines();
-      generateRMNodes();
+      createComposer()
+      requestRenderIfNotRequested()
+      generateRMLines()
+      generateRMNodes()
     }
 
-    const IntervalRMLine = 1;
+    const IntervalRMLine = 1
     function generateRMLines() {
       //Generate line data from node data
-      const dataset_line = [];
+      const dataset_line = []
       for (let i in dataset) {
-        const k = i - 1;
-        if (k < 0) continue;
+        const k = i - 1
+        if (k < 0) continue
         const data = {
           start: {
             title: dataset[k].title,
             texture: dataset[k].texture,
             position: dataset[k].position,
-            color: dataset[k].color,
+            color: dataset[k].color
           },
           end: {
             title: dataset[i].title,
             texture: dataset[i].texture,
             position: dataset[i].position,
-            color: dataset[i].color,
-          },
-        };
-        dataset_line.push(data);
+            color: dataset[i].color
+          }
+        }
+        dataset_line.push(data)
       }
 
       //Create rmlines
       for (let i in dataset_line) {
-        dataset_line[i].delay = i * IntervalRMLine;
-        const rmLine = RMLine(scene, dataset_line[i]);
-        rmLines.push(rmLine);
+        dataset_line[i].delay = i * IntervalRMLine
+        const rmLine = RMLine(scene, dataset_line[i])
+        rmLines.push(rmLine)
       }
     }
 
-    const IntervalRMNode = 1;
+    const IntervalRMNode = 1
     function generateRMNodes() {
       for (let i in dataset) {
-        dataset[i].delay = i * IntervalRMNode;
-        const rmNode = RMNode(scene, dataset[i]);
-        rmNodes.push(rmNode);
-        intersects.push(rmNode.intersect);
+        dataset[i].delay = i * IntervalRMNode
+        const rmNode = RMNode(scene, dataset[i])
+        rmNodes.push(rmNode)
+        intersects.push(rmNode.intersect)
       }
     }
 
     /**
      * Load Assets
      */
-    const loadingManager = new THREE.LoadingManager();
-    loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {};
-    loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {};
+    const loadingManager = new THREE.LoadingManager()
+    loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {}
+    loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {}
     loadingManager.onLoad = () => {
-      startRender();
-    };
+      startRender()
+    }
 
     //Load smaa images
-    let smaaSearchImage, smaaAreaImage;
-    const smaaImageLoader = new POSTPROCESSING.SMAAImageLoader(loadingManager);
+    let smaaSearchImage, smaaAreaImage
+    const smaaImageLoader = new POSTPROCESSING.SMAAImageLoader(loadingManager)
     smaaImageLoader.load(([search, area]) => {
-      smaaSearchImage = search;
-      smaaAreaImage = area;
-    });
+      smaaSearchImage = search
+      smaaAreaImage = area
+    })
 
     //Load textures
-    const textureLoader = new THREE.TextureLoader(loadingManager);
+    const textureLoader = new THREE.TextureLoader(loadingManager)
     for (let i in dataset) {
-      dataset[i].texture = textureLoader.load(dataset[i].texturePath);
+      dataset[i].texture = textureLoader.load(dataset[i].texturePath)
     }
 
     /**
      * RenderEvent & Dispose
      */
-    window.addEventListener("resize", requestRenderIfNotRequested);
+    window.addEventListener("resize", requestRenderIfNotRequested)
     return () => {
-      window.removeEventListener("resize", requestRenderIfNotRequested);
-      if(canvasContainer.current)
-        canvasContainer.current.innerHTML = "";
-    };
-  }, []);
+      window.removeEventListener("resize", requestRenderIfNotRequested)
+      if (canvasContainer.current) canvasContainer.current.innerHTML = ""
+    }
+  }, [])
 
   return (
     <>
       <DescriptionModal
         modalIsOpen={isOpenDesModal}
         onRequestClose={() => {
-          setIsOpenDesModal(false);
+          setIsOpenDesModal(false)
         }}
         modalData={modalData}
       />
@@ -477,13 +468,13 @@ function ProductRoadmap({ dataset }) {
           <span
             className={classnames(styles.btnArrow, styles.btnNext)}
             onClick={() => {
-              window.nextViewport();
+              window.nextViewport()
             }}
           ></span>
           <span
             className={classnames(styles.btnArrow, styles.btnPrev)}
             onClick={() => {
-              window.prevViewport();
+              window.prevViewport()
             }}
           ></span>
         </>
@@ -493,7 +484,7 @@ function ProductRoadmap({ dataset }) {
 
       <div className={styles.canvasContainer} ref={canvasContainer}></div>
     </>
-  );
+  )
 }
 
-export default ProductRoadmap;
+export default ProductRoadmap

@@ -1,25 +1,25 @@
-import PropTypes from "prop-types";
-import Modal from "react-modal";
-import styles from "./DescriptionModal.module.css";
-import Template1 from "../ModalContents/Template1";
+import PropTypes from "prop-types"
+import Modal from "react-modal"
+import styles from "./DescriptionModal.module.css"
+import Template1 from "../ModalContents/Template1"
 
-const DescriptionModal = ({
-  modalIsOpen,
-  onRequestClose,
-  modalData,
-}) => {
-  Modal.setAppElement("#root");
+const DescriptionModal = ({ modalIsOpen, onRequestClose, modalData }) => {
+  Modal.setAppElement("#root")
 
-  let content = <></>;
+  let content = <></>
   //Set Content
   switch (modalData.template) {
     case "template1":
       content = (
-        <Template1 image={modalData.image} title={modalData.title} desc={modalData.desc}></Template1>
-      );
-      break;
+        <Template1
+          image={modalData.image}
+          title={modalData.title}
+          desc={modalData.desc}
+        ></Template1>
+      )
+      break
     default:
-      break;
+      break
   }
 
   return (
@@ -37,13 +37,13 @@ const DescriptionModal = ({
       ></button>
       {content}
     </Modal>
-  );
-};
+  )
+}
 
 DescriptionModal.propTypes = {
   modalIsOpen: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
-  modalData: PropTypes.any.isRequired,
-};
+  modalData: PropTypes.any.isRequired
+}
 
-export default DescriptionModal;
+export default DescriptionModal

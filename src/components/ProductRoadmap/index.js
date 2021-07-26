@@ -1,3 +1,3 @@
-import ProductRoadmap from "./ProductRoadmap";
+import ProductRoadmap from "./ProductRoadmap"
 
-export default ProductRoadmap;
+export default ProductRoadmap

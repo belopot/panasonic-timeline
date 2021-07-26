@@ -1,3 +1,3 @@
-import DescriptionModal from "./DescriptionModal";
+import DescriptionModal from "./DescriptionModal"
 
-export default DescriptionModal;
+export default DescriptionModal

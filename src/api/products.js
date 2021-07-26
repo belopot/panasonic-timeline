@@ -9,9 +9,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/1.png",
       title: "The Begining - Konosuke Matsushita",
-      desc:
-        "Konosuke Matsushita began his mission to empower the world more than 100 years ago.",
-    },
+      desc: "Konosuke Matsushita began his mission to empower the world more than 100 years ago."
+    }
   },
   {
     title: "1931<br/>The First Dry<br/>Battery",
@@ -23,9 +22,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/2.png",
       title: "The First Dry Battery",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
   },
   {
     title: "1994<br/>Introduces Rechargeable",
@@ -37,9 +35,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/3.png",
       title: "Introduces Rechargeable",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
   },
   {
     title: "1997<br/>Automotive<br/>Ni-Hd",
@@ -51,9 +48,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/4.png",
       title: "Automotive Ni-Hd",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
   },
   {
     title: "2010<br/>Lib Auto<br/>Cylindrical",
@@ -65,9 +61,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/5.png",
       title: "Lib Auto Cylindrical",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
   },
   {
     title: "2017<br/>Lib For Multi Application",
@@ -79,9 +74,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/6.png",
       title: "Lib For Multi Application",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
   },
   {
     title: "Now<br/>Environmental<br/>Priority",
@@ -93,9 +87,8 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/7.png",
       title: "Environmental Priority",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
   },
   {
     title: "The Future<br/>Toward Carbon<br/>Neutrality",
@@ -107,10 +100,9 @@ const ProductData = [
       template: "template1",
       image: "/assets/images/8.png",
       title: "Toward Carbon Neutrality",
-      desc:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    },
-  },
-];
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s"
+    }
+  }
+]
 
-export default ProductData;
+export default ProductData
