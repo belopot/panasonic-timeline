@@ -29,3 +29,40 @@
     font-style: normal;
     font-display: swap;
 }
+
+html {
+    font-size: 16px;
+    font-family: "DINOT";
+}
+
+body {
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.renderer2D {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    width: inherit !important;
+    height: inherit !important;
+}
+
+.rmNodeAnno {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.rmNodeAnno span {
+    position: absolute;
+    color: aliceblue;
+    font-size: 1.2em;
+    width: max-content;
+}
+
+.animate__animated.animate__fadeInUp {
+    --animate-duration: 0.8s;
+}

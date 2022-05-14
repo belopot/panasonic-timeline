@@ -1,11 +1,12 @@
-import PropTypes from "prop-types"
 import styles from "./Template1.module.css"
+import { LazyLoadImage } from "react-lazy-load-image-component"
+import "react-lazy-load-image-component/src/effects/blur.css"
 
 const Template1 = ({ image, title, desc }) => {
   return (
     <div className={styles.content}>
       <div className={styles.image}>
-        <img src={image} alt=""></img>
+        <LazyLoadImage alt={styles.title} effect="blur" src={image} />
       </div>
       <div className={styles.detail}>
         <div className={styles.title}>{title}</div>
@@ -13,12 +14,6 @@ const Template1 = ({ image, title, desc }) => {
       </div>
     </div>
   )
-}
-
-Template1.propTypes = {
-  image: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  desc: PropTypes.string.isRequired
 }
 
 export default Template1

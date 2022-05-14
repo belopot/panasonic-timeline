@@ -1,4 +1,4 @@
-import ProductRoadmap from "../components/ProductRoadmap"
+import ProductRoadmap from "components/ProductRoadmap"
 
 const Timeline = ({ data }) => {
   return <ProductRoadmap dataset={data}></ProductRoadmap>

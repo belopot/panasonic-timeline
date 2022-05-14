@@ -1,26 +1,28 @@
-import { useEffect, useRef, useState } from "react"
-import classnames from "classnames"
+import React, { useEffect, useRef, useState } from "react"
+import styled from "styled-components"
 import * as THREE from "three"
+import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer"
 import * as POSTPROCESSING from "postprocessing"
 import { gsap, Power2 } from "gsap"
-import { CSS2DRenderer } from "../libs/CSS2DRenderer"
-import RMLine from "../libs/RMLine"
-import RMNode from "../libs/RMNode"
-import DescriptionModal from "../DescriptionModal"
+import RMLine from "./libs/RMLine"
+import RMNode from "./libs/RMNode"
+import DescriptionModal from "components/DescriptionModal"
 import "animate.css"
-import styles from "./ProductRoadmap.module.css"
+import ArrowButton from "components/ArrowButton"
+import Composer from "./libs/composer/Composer"
 
-THREE.Cache.enabled = true
+let composer
+let assets = { "smaa-search": null, "smaa-area": null }
 
 function ProductRoadmap({ dataset }) {
-  const canvasContainer = useRef(null)
+  const canvasHolderRef = useRef(null)
   const [isOpenDesModal, setIsOpenDesModal] = useState(false)
   const [modalData, setModalData] = useState({})
   const [isPortrait, setIsPortrait] = useState(false)
 
   useEffect(() => {
-    let width = canvasContainer.current.offsetWidth
-    let height = canvasContainer.current.offsetHeight
+    let width = canvasHolderRef.current.offsetWidth
+    let height = canvasHolderRef.current.offsetHeight
     setIsPortrait(height > width)
 
     // eslint-disable-next-line
@@ -33,7 +35,7 @@ function ProductRoadmap({ dataset }) {
      * Scene
      */
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x000000)
+    // scene.background = new THREE.Color(0x000000)
     // scene.fog = new THREE.Fog(0xa0a0a0, 30, 64);
 
     /**
@@ -62,21 +64,27 @@ function ProductRoadmap({ dataset }) {
     //3D renderer
     const renderer = new THREE.WebGLRenderer({
       powerPreference: "high-performance",
-      antialias: false,
+      antialias: true,
       stencil: false,
-      depth: false
+      depth: false,
+      alpha: true
     })
-    renderer.setClearColor("#ffffff")
-    renderer.setSize(width, height)
-    renderer.setPixelRatio(2)
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setClearColor(0xff0000, 0)
+    // renderer.physicallyCorrectLights = true
+    // renderer.toneMapping = THREE.ACESFilmicToneMapping
+    // renderer.outputEncoding = THREE.sRGBEncoding
+    // renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    // renderer.shadowMap.enabled = true
+    renderer.setSize(width, height, false)
 
-    canvasContainer.current.appendChild(renderer.domElement)
+    canvasHolderRef.current.appendChild(renderer.domElement)
 
     //2D renderer
     const renderer2D = new CSS2DRenderer()
     renderer2D.setSize(width, height)
     renderer2D.domElement.className = "renderer2D"
-    canvasContainer.current.appendChild(renderer2D.domElement)
+    canvasHolderRef.current.appendChild(renderer2D.domElement)
 
     //Mouse&Touch event
     function onMouseDown(event) {}
@@ -167,7 +175,6 @@ function ProductRoadmap({ dataset }) {
         )
       }
     }
-    initCamPos()
 
     function nextViewport() {
       let idx = curViewportIdx
@@ -220,117 +227,11 @@ function ProductRoadmap({ dataset }) {
     window.prevViewport = prevViewport
 
     /**
-     * Composer
-     */
-    let composer
-    function createComposer() {
-      //Composer
-      composer = new POSTPROCESSING.EffectComposer(renderer)
-      const renderPass = new POSTPROCESSING.RenderPass(scene, camera)
-      composer.addPass(renderPass)
-      const vignetteEffect = new POSTPROCESSING.VignetteEffect({
-        eskil: false,
-        offset: 0.1,
-        darkness: 0.7
-      })
-      const brightnessContrastEffect = new POSTPROCESSING.BrightnessContrastEffect({
-        contrast: 0.05,
-        brightness: 0.0
-      })
-      const gammaCorrectionEffect = new POSTPROCESSING.GammaCorrectionEffect({
-        gamma: 1.5
-      })
-
-      const smaaEffect = new POSTPROCESSING.SMAAEffect(
-        smaaSearchImage,
-        smaaAreaImage,
-        POSTPROCESSING.SMAAPreset.HIGH,
-        POSTPROCESSING.EdgeDetectionMode.DEPTH
-      )
-      smaaEffect.setEdgeDetectionThreshold(0.02)
-
-      const bloomEffect = new POSTPROCESSING.BloomEffect({
-        blendFunction: POSTPROCESSING.BlendFunction.SCREEN,
-        kernelSize: POSTPROCESSING.KernelSize.MEDIUM,
-        luminanceThreshold: 0.3,
-        luminanceSmoothing: 0.83,
-        height: 1024,
-        intensity: 1.5,
-        resolutionScale: 0.5
-      })
-
-      const hueSaturationEffect = new POSTPROCESSING.HueSaturationEffect({
-        hue: 0.0,
-        saturation: 0.191
-      })
-
-      const normalPass = new POSTPROCESSING.NormalPass(scene, camera)
-      const depthDownsamplingPass = new POSTPROCESSING.DepthDownsamplingPass({
-        normalBuffer: normalPass.texture,
-        resolutionScale: 0.5
-      })
-      const normalDepthBuffer = renderer.capabilities.isWebGL2
-        ? depthDownsamplingPass.texture
-        : null
-
-      // Note: Thresholds and falloff correspond to camera near/far.
-      // Example: worldDistance = distanceThreshold * (camera.far - camera.near)
-      const ssaoEffect = new POSTPROCESSING.SSAOEffect(camera, normalPass.texture, {
-        blendFunction: POSTPROCESSING.BlendFunction.MULTIPLY,
-        distanceScaling: true,
-        depthAwareUpsampling: true,
-        normalDepthBuffer,
-        samples: 9,
-        rings: 7,
-        distanceThreshold: 0.02, // Render up to a distance of ~20 world units
-        distanceFalloff: 0.0025, // with an additional ~2.5 units of falloff.
-        rangeThreshold: 0.0003, // Occlusion proximity of ~0.3 world units
-        rangeFalloff: 0.0001, // with ~0.1 units of falloff.
-        luminanceInfluence: 0.7,
-        minRadiusScale: 0.33,
-        radius: 0.1,
-        intensity: 1.33,
-        bias: 0.025,
-        fade: 0.01,
-        color: null,
-        resolutionScale: 0.5
-      })
-
-      const textureEffect = new POSTPROCESSING.TextureEffect({
-        blendFunction: POSTPROCESSING.BlendFunction.SKIP,
-        texture: depthDownsamplingPass.texture
-      })
-
-      const effectPass = new POSTPROCESSING.EffectPass(
-        camera,
-        // bloomEffect,
-        smaaEffect,
-        ssaoEffect,
-        textureEffect,
-        vignetteEffect,
-        brightnessContrastEffect,
-        gammaCorrectionEffect,
-        hueSaturationEffect
-      )
-
-      composer.addPass(normalPass)
-      if (renderer.capabilities.isWebGL2) {
-        composer.addPass(depthDownsamplingPass)
-      } else {
-        console.log("WebGL 2 not supported, falling back to naive depth downsampling")
-      }
-
-      composer.addPass(effectPass)
-      composer.setSize(width, height)
-    }
-
-    /**
      * Resize & Render
      */
     function resizeRendererToDisplaySize() {
       const canvasWidth = renderer.domElement.offsetWidth
       const canvasHeight = renderer.domElement.offsetHeight
-
       const needResize = canvasWidth !== width || canvasHeight !== height
       if (needResize) {
         width = canvasWidth
@@ -342,10 +243,10 @@ function ProductRoadmap({ dataset }) {
         camera.bottom = -frustumSize / 2
         camera.updateProjectionMatrix()
         renderer.setSize(width, height)
-        composer.setSize(width, height)
         renderer2D.setSize(width, height)
-        initCamPos()
+        composer.setSize(width, height)
         setIsPortrait(height > width)
+        initCamPos()
       }
     }
 
@@ -359,8 +260,11 @@ function ProductRoadmap({ dataset }) {
         rmLines[i].update(width, height)
       }
 
-      if (composer) composer.render()
       renderer2D.render(scene, camera)
+      renderer.render(scene, camera)
+      if (composer) {
+        composer.render(clock.getDelta())
+      }
     }
 
     function requestRenderIfNotRequested() {
@@ -370,13 +274,6 @@ function ProductRoadmap({ dataset }) {
       }
     }
     window.requestRenderIfNotRequested = requestRenderIfNotRequested
-
-    function startRender() {
-      createComposer()
-      requestRenderIfNotRequested()
-      generateRMLines()
-      generateRMNodes()
-    }
 
     const IntervalRMLine = 1
     function generateRMLines() {
@@ -427,15 +324,21 @@ function ProductRoadmap({ dataset }) {
     loadingManager.onStart = (url, itemsLoaded, itemsTotal) => {}
     loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {}
     loadingManager.onLoad = () => {
-      startRender()
+      //Install composer
+      composer = new Composer(renderer, scene, camera, assets)
+
+      initCamPos()
+
+      requestRenderIfNotRequested()
+      generateRMLines()
+      generateRMNodes()
     }
 
     //Load smaa images
-    let smaaSearchImage, smaaAreaImage
     const smaaImageLoader = new POSTPROCESSING.SMAAImageLoader(loadingManager)
     smaaImageLoader.load(([search, area]) => {
-      smaaSearchImage = search
-      smaaAreaImage = area
+      assets["smaa-search"] = search
+      assets["smaa-area"] = area
     })
 
     //Load textures
@@ -450,12 +353,12 @@ function ProductRoadmap({ dataset }) {
     window.addEventListener("resize", requestRenderIfNotRequested)
     return () => {
       window.removeEventListener("resize", requestRenderIfNotRequested)
-      if (canvasContainer.current) canvasContainer.current.innerHTML = ""
+      if (canvasHolderRef.current) canvasHolderRef.current.innerHTML = ""
     }
   }, [])
 
   return (
-    <>
+    <Holder>
       <DescriptionModal
         modalIsOpen={isOpenDesModal}
         onRequestClose={() => {
@@ -463,28 +366,68 @@ function ProductRoadmap({ dataset }) {
         }}
         modalData={modalData}
       />
-      {isPortrait ? (
+      {isPortrait && (
         <>
-          <span
-            className={classnames(styles.btnArrow, styles.btnNext)}
+          <NextButton
             onClick={() => {
               window.nextViewport()
             }}
-          ></span>
-          <span
-            className={classnames(styles.btnArrow, styles.btnPrev)}
+          />
+          <PrevButton
             onClick={() => {
               window.prevViewport()
             }}
-          ></span>
+          />
         </>
-      ) : (
-        <></>
       )}
-
-      <div className={styles.canvasContainer} ref={canvasContainer}></div>
-    </>
+      <CanvasHolder ref={canvasHolderRef} />
+    </Holder>
   )
 }
 
 export default ProductRoadmap
+
+const Holder = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+`
+
+const CanvasHolder = styled.div`
+  width: 100%;
+  height: 100%;
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #212121;
+  }
+`
+
+const NextButton = styled(ArrowButton)`
+  position: absolute;
+  top: 50%;
+  right: 0.5em;
+  z-index: 1;
+  &:after {
+    content: "";
+    width: 1em;
+    height: 1em;
+    border-top: 0.15em solid rgb(216, 216, 216);
+    border-right: 0.15em solid rgb(216, 216, 216);
+    transform: rotate(45deg);
+  }
+`
+const PrevButton = styled(ArrowButton)`
+  position: absolute;
+  top: 50%;
+  left: 0.5em;
+  z-index: 1;
+  &:after {
+    content: "";
+    width: 1em;
+    height: 1em;
+    border-top: 0.15em solid rgb(216, 216, 216);
+    border-right: 0.15em solid rgb(216, 216, 216);
+    transform: rotate(-135deg);
+  }
+`
